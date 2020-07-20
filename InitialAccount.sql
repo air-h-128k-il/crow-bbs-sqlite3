@@ -1,1 +1,1 @@
-INSERT INTO bbs(id, text) VALUES (2, 'DEMO');
+INSERT INTO bbs(id, text) VALUES (1, 'DEMO');
