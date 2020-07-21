@@ -1,1 +1,5 @@
-INSERT INTO bbs(id, text) VALUES (1, 'test');
+CREATE TABLE bbs (
+    id integer primary key,
+    text text,
+    created timestamp default current_timestamp
+);
