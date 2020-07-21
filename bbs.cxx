@@ -2,14 +2,46 @@
 #include <stdexcept>
 #include <sqlite3.h>
 #include "crow_all.h"
+#include <string>
+#include <fstream>
+#include <iostream>
 
 int
 main() {
   sqlite3 *db = nullptr;
+  
+  //just practice. maybe .lib makes db file automatically
+  std::ifstream ifs("./bbs.db");
+  if (!ifs.is_open()){
+    std::ofstream("./bbs.db");  
+  }
+  
+  //open
   int r = sqlite3_open("bbs.db", &db);
   if (SQLITE_OK != r) {
     throw std::runtime_error("can't open database");
   }
+  
+    
+    sqlite3_stmt* stmt; 
+    const char *sql = "select count(*) from sqlite_master where type='table' and name='bbs';";
+    sqlite3_prepare(db, sql, -1, &stmt, NULL);
+    sqlite3_step(stmt);
+    int table_num = sqlite3_column_int(stmt, 0);
+    sqlite3_reset(stmt);
+
+    if(table_num == 0){
+        const char *sql1 = "CREATE TABLE bbs (id integer primary key,text text,created timestamp default current_timestamp)";
+        sqlite3_prepare(db, sql1, -1, &stmt, NULL);
+        sqlite3_step(stmt);
+        sqlite3_reset(stmt);
+        const char *sql2 = "INSERT INTO bbs(id, text) VALUES (1, 'DEMO');";
+        sqlite3_prepare(db, sql2, -1, &stmt, NULL);
+        sqlite3_step(stmt);
+        sqlite3_reset(stmt);        
+    }
+
+    
   crow::SimpleApp app;
   crow::mustache::set_base(".");
 
